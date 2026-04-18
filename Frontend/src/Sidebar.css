@@ -1,0 +1,212 @@
+.sidebar {
+    background: linear-gradient(180deg, #141414 0%, #101010 100%);
+    color: #b4b4b4;
+    height: 100vh;
+    width: 320px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.newChatButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 14px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.newChatLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.newChatText {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.newChatText strong {
+    color: #f8f8f8;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.newChatText small {
+    color: #8d8d8d;
+    font-size: 12px;
+}
+
+.logo {
+    height: 32px;
+    width: 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.newChatButton span {
+    font-size: 20px;
+    color: #f5f5f5;
+}
+
+.newChatButton:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+.historySection {
+    flex: 1;
+    min-height: 0;
+    margin: 0 10px 10px;
+    padding: 6px 4px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.historyHeading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 10px;
+    color: #909090;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.historyHeading small {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #d4d4d4;
+}
+
+.history {
+    margin: 0;
+    padding: 0 6px 0 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.history li {
+    list-style-type: none;
+    cursor: pointer;
+    padding: 12px 56px 12px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    position: relative;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.history li:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.threadInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.threadTitleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.threadTitle {
+    color: #f1f1f1;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.threadPreview {
+    margin: 0;
+    color: #8c8c8c;
+    font-size: 12px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.historyEmpty {
+    padding: 14px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #8d8d8d;
+    cursor: default;
+}
+
+.sign {
+    padding: 14px 10px 16px;
+    margin: 0 10px 10px;
+    font-size: 14px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.threadDeleteButton {
+    opacity: 0;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #d0d0d0;
+    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.history li:hover .threadDeleteButton,
+.history li.highlighted .threadDeleteButton {
+    opacity: 1;
+    color: #fff;
+}
+
+.threadDeleteButton:hover {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+}
+
+.highlighted {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.1);
+} 
+
+.name {
+  font-weight: bold;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 280px;
+        min-width: 280px;
+    }
+}

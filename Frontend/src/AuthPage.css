@@ -1,0 +1,118 @@
+.authShell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 28%),
+    #1f1f1f;
+}
+
+.authPanel {
+  width: min(420px, 100%);
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+}
+
+.authIntro h1 {
+  margin: 8px 0 0;
+  font-size: clamp(32px, 5vw, 42px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.authEyebrow {
+  margin: 0;
+  color: #8f8f95;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.authSubtext {
+  margin: 12px 0 0;
+  color: #9f9fa7;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.authForm {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.authField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.authField span {
+  color: #d8d8dd;
+  font-size: 13px;
+}
+
+.authField input {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #f4f4f6;
+  outline: none;
+}
+
+.authField input:focus {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.authButton,
+.authSwitchButton {
+  border: none;
+  cursor: pointer;
+}
+
+.authButton {
+  margin-top: 4px;
+  border-radius: 18px;
+  padding: 14px 18px;
+  background: #f5f5f7;
+  color: #121214;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.authButton:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.authError {
+  margin: 0;
+  color: #ff8f8f;
+  font-size: 13px;
+}
+
+.authSwitch {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9f9fa7;
+  font-size: 13px;
+}
+
+.authSwitchButton {
+  background: transparent;
+  color: #f5f5f7;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
