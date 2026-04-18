@@ -14,11 +14,12 @@ import {
 } from "../utils/auth.js";
 
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === "production";
 
 const buildCookieOptions = () => ({
   httpOnly: true,
-  sameSite: "lax",
-  secure: false,
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
   maxAge: SESSION_TTL_MS,
   path: "/",
 });
@@ -31,8 +32,8 @@ const setSessionCookie = (res, token) => {
 const clearSessionCookie = (res) => {
   res.clearCookie(SESSION_COOKIE, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: false,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
     path: "/",
   });
 };

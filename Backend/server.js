@@ -8,13 +8,31 @@ import seedAdmin from "./utils/seedAdmin.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+].filter(Boolean).map((origin) => origin.replace(/\/+$/, ""));
 
 // middleware
 app.use(express.json());
 app.use(
   cors({
-    origin: FRONTEND_URL,
+    origin: (origin, callback) => {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const normalizedOrigin = origin.replace(/\/+$/, "");
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origin ${origin} is not allowed by CORS`));
+    },
     credentials: true,
   }),
 );
