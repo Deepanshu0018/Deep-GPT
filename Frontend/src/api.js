@@ -1,7 +1,10 @@
-const IS_PROD = false;
+// ✅ Auto-detect production based on hostname
+const IS_PROD =
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1";
 
 const server = IS_PROD
-  ? "https://deep-gpt.onrender.com"
+  ? "https://deep-gpt-backend.onrender.com"
   : "http://localhost:8080";
 
 // ✅ API helper (centralized fetch)
