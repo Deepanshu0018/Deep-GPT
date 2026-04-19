@@ -212,6 +212,15 @@ function Sidebar() {
                     By <span className="name">DeepanshuGupta</span> ♥
                 </p>
             </div>
+            <a
+                className="sidebarSocialLink"
+                href="https://www.linkedin.com/in/deepanshu-gupta-977383384/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Visit Deepanshu Gupta's LinkedIn profile"
+            >
+                LinkedIn
+            </a>
 
         </section>
     );

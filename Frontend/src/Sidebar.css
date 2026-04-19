@@ -204,6 +204,21 @@
   color: #fff;
 }
 
+.sidebarSocialLink {
+    align-self: center;
+    margin: -2px 0 16px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8f99ab;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.sidebarSocialLink:hover {
+    color: #dbe7ff;
+}
+
 @media (max-width: 900px) {
     .sidebar {
         width: 280px;
