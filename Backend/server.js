@@ -19,17 +19,7 @@ const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://localhost:5174",
   "http://127.0.0.1:5174",
-  // Allow any .onrender.com frontend domain
-  /.+\.onrender\.com$/,
-].map((origin) => {
-  if (typeof origin === "string") {
-    return origin.replace(/\/+$/, "");
-  }
-  return origin;
-});
-
-// ✅ Middleware
-app.use(express.json());
+];
 
 // ✅ CORS (fixed + safer + debug-friendly)
 app.use(
@@ -39,16 +29,15 @@ app.use(
 
       const normalizedOrigin = origin.replace(/\/+$/, "");
 
-      // Check string matches
-      const isAllowed = allowedOrigins.some((allowed) => {
-        if (typeof allowed === "string") {
-          return allowed === normalizedOrigin;
-        }
-        // Check regex matches
-        return allowed.test(normalizedOrigin);
-      });
+      // Check exact matches
+      const isExactMatch = allowedOrigins.some(
+        (allowed) => allowed === normalizedOrigin,
+      );
 
-      if (isAllowed) {
+      // Check regex: allow any .onrender.com domain
+      const isRenderMatch = /.+\.onrender\.com$/.test(normalizedOrigin);
+
+      if (isExactMatch || isRenderMatch) {
         return callback(null, true);
       }
 
@@ -56,8 +45,13 @@ app.use(
       return callback(new Error(`Origin ${origin} not allowed`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+// ✅ Middleware
+app.use(express.json());
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
