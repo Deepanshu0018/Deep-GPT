@@ -9,10 +9,13 @@ import seedAdmin from "./utils/seedAdmin.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
+  ...String(process.env.FRONTEND_URL || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-].filter(Boolean).map((origin) => origin.replace(/\/+$/, ""));
+].map((origin) => origin.replace(/\/+$/, ""));
 
 // middleware
 app.use(express.json());
