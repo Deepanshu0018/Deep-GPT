@@ -4,7 +4,7 @@ const IS_PROD =
   window.location.hostname !== "127.0.0.1";
 
 const server = IS_PROD
-  ? "https://deep-gpt-backend.onrender.com"
+  ? "https://deep-gpt.onrender.com"
   : "http://localhost:8080";
 
 // ✅ API helper (centralized fetch)
