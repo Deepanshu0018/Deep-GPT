@@ -1,10 +1,9 @@
 import Session from "../models/Session.js";
-import { SESSION_COOKIE, hashSessionToken, parseCookies } from "../utils/auth.js";
+import { getSessionTokenFromRequest, hashSessionToken } from "../utils/auth.js";
 
 export const requireAuth = async (req, res, next) => {
   try {
-    const cookies = parseCookies(req.headers.cookie);
-    const token = cookies[SESSION_COOKIE];
+    const token = getSessionTokenFromRequest(req);
 
     if (!token) {
       return res.status(401).json({ message: "Authentication required" });

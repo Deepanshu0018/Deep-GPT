@@ -5,7 +5,7 @@ import { MyContext } from "./MyContext.jsx";
 import { useEffect, useState } from 'react';
 import { v1 as uuidv1 } from "uuid";
 import AuthPage from "./AuthPage.jsx";
-import { apiFetch } from "./api.js";
+import { apiFetch, clearSessionToken } from "./api.js";
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -17,37 +17,31 @@ function App() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  // ✅ Load current user on app start
   useEffect(() => {
     let isMounted = true;
 
     const loadCurrentUser = async () => {
       try {
-        const response = await apiFetch("/auth/me");
+        const data = await apiFetch("/api/auth/me");
 
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
 
-        if (response.status === 401) {
-          setUser(null);
-          setAuthLoading(false);
-          return;
-        }
+        setUser(data.user);
 
-        const res = await response.json();
-
-        if (!response.ok) {
-          throw new Error(res.message || "Unable to load session");
-        }
-
-        setUser(res.user);
       } catch (error) {
-        console.error("Auth bootstrap error:", error);
-        setUser(null);
-      }
-
-      if (isMounted) {
-        setAuthLoading(false);
+        // ✅ Handle 401 silently (normal case)
+        if (error.message === "Authentication required") {
+          setUser(null);
+        } else {
+          console.error("Auth error:", error);
+          clearSessionToken();
+          setUser(null);
+        }
+      } finally {
+        if (isMounted) {
+          setAuthLoading(false);
+        }
       }
     };
 
@@ -58,6 +52,7 @@ function App() {
     };
   }, []);
 
+  // ✅ Reset chat state after login/logout
   const resetChatState = () => {
     setPrompt("");
     setMessages([]);
@@ -67,6 +62,7 @@ function App() {
     setIsLoading(false);
   };
 
+  // ✅ After successful login/signup
   const handleAuthSuccess = (nextUser) => {
     setUser(nextUser);
     resetChatState();
@@ -83,6 +79,7 @@ function App() {
     resetChatState,
   };
 
+  // ⏳ Loading screen
   if (authLoading) {
     return (
       <div className="appLoader">
@@ -91,10 +88,12 @@ function App() {
     );
   }
 
+  // 🔐 Not logged in → show auth page
   if (!user) {
     return <AuthPage onAuthSuccess={handleAuthSuccess} />;
   }
 
+  // 💬 Main app
   return (
     <div className='app'>
       <MyContext.Provider value={providerValues}>

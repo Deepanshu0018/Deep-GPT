@@ -34,6 +34,21 @@ export const createSessionToken = () => randomBytes(32).toString("hex");
 export const hashSessionToken = (token) =>
   createHash("sha256").update(token).digest("hex");
 
+export const parseBearerToken = (authorizationHeader = "") => {
+  const [scheme, token] = authorizationHeader.trim().split(/\s+/, 2);
+
+  if (!scheme || !token || scheme.toLowerCase() !== "bearer") {
+    return "";
+  }
+
+  return token.trim();
+};
+
+export const getSessionTokenFromRequest = (req) => {
+  const cookies = parseCookies(req.headers.cookie);
+  return cookies[SESSION_COOKIE] || parseBearerToken(req.headers.authorization) || "";
+};
+
 export const parseCookies = (cookieHeader = "") =>
   cookieHeader
     .split(";")

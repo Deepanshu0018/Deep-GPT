@@ -3,13 +3,13 @@ import User from "../models/User.js";
 import Session from "../models/Session.js";
 import { requireAuth } from "../middleware/auth.js";
 import {
+  getSessionTokenFromRequest,
   SESSION_COOKIE,
   SESSION_TTL_MS,
   createSessionToken,
   hashPassword,
   hashSessionToken,
   normalizeEmail,
-  parseCookies,
   verifyPassword,
 } from "../utils/auth.js";
 
@@ -79,6 +79,7 @@ router.post("/signup", async (req, res) => {
     setSessionCookie(res, token);
 
     res.status(201).json({
+      sessionToken: token,
       user: {
         id: user._id,
         name: user.name,
@@ -114,6 +115,7 @@ router.post("/login", async (req, res) => {
     setSessionCookie(res, token);
 
     res.json({
+      sessionToken: token,
       user: {
         id: user._id,
         name: user.name,
@@ -129,8 +131,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
   try {
-    const cookies = parseCookies(req.headers.cookie);
-    const token = cookies[SESSION_COOKIE];
+    const token = getSessionTokenFromRequest(req);
 
     if (token) {
       await Session.findOneAndDelete({ tokenHash: hashSessionToken(token) });

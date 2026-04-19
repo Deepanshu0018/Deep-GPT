@@ -3,7 +3,7 @@ import Chat from "./Chat.jsx";
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useState } from "react";
 import { ScaleLoader } from "react-spinners";
-import { apiFetch } from "./api.js";
+import { apiFetch, clearSessionToken } from "./api.js";
 
 function ChatWindow() {
   const {
@@ -30,30 +30,21 @@ function ChatWindow() {
     setLoading(true);
     setNewChat(false);
 
-    // Add user message
     const userMsg = { role: "user", content: messageToSend };
     setMessages(prev => [...prev, userMsg]);
     setPrompt("");
 
     try {
-      const response = await apiFetch("/chat", {
+      // ✅ FIXED endpoint + no stringify
+      const res = await apiFetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+        body: {
           message: messageToSend,
           threadId: currThreadId
-        })
+        }
       });
 
-      const res = await response.json();
-
-      if (!response.ok) {
-        throw new Error(res.message || "Failed to get reply");
-      }
-
-      // Add bot reply
+      // ✅ Direct use (no .json())
       const assistantMsg = {
         role: "assistant",
         content: res.reply || "No reply received."
@@ -87,7 +78,7 @@ function ChatWindow() {
           content: err.message || "Something went wrong while getting a reply."
         }
       ]);
-      setNewChat(prev => prev && false);
+      setNewChat(false);
     }
 
     setLoading(false);
@@ -99,11 +90,13 @@ function ChatWindow() {
 
   const handleLogout = async () => {
     try {
-      await apiFetch("/auth/logout", { method: "POST" });
+      // ✅ FIXED endpoint
+      await apiFetch("/api/auth/logout", { method: "POST" });
     } catch (error) {
       console.error("Logout error:", error);
     }
 
+    clearSessionToken();
     setIsOpen(false);
     resetChatState();
     setUser(null);

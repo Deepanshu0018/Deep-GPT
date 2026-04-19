@@ -1,6 +1,6 @@
 import "./AuthPage.css";
 import { useState } from "react";
-import { apiFetch } from "./api.js";
+import { apiFetch, clearSessionToken, persistSessionToken } from "./api.js";
 
 function AuthPage({ onAuthSuccess }) {
   const [mode, setMode] = useState("login");
@@ -25,7 +25,10 @@ function AuthPage({ onAuthSuccess }) {
     setIsSubmitting(true);
 
     try {
-      const endpoint = mode === "login" ? "/auth/login" : "/auth/signup";
+      // ✅ FIXED endpoints
+      const endpoint =
+        mode === "login" ? "/api/auth/login" : "/api/auth/signup";
+
       const payload =
         mode === "login"
           ? {
@@ -34,22 +37,26 @@ function AuthPage({ onAuthSuccess }) {
             }
           : formData;
 
-      const response = await apiFetch(endpoint, {
+      // ✅ NO JSON.stringify, NO .json()
+      const res = await apiFetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: payload,
       });
 
-      const res = await response.json();
-
-      if (!response.ok) {
-        throw new Error(res.message || "Authentication failed");
+      // ✅ Token handling
+      if (res.sessionToken) {
+        persistSessionToken(res.sessionToken);
+      } else {
+        clearSessionToken();
       }
 
-      onAuthSuccess(res.user);
+      // ✅ Get user session
+      const sessionData = await apiFetch("/api/auth/me");
+
+      onAuthSuccess(sessionData.user);
+
     } catch (submitError) {
+      clearSessionToken();
       setError(submitError.message || "Authentication failed");
     }
 
@@ -63,7 +70,9 @@ function AuthPage({ onAuthSuccess }) {
           <p className="authEyebrow">DeepGPT</p>
           <h1>{mode === "login" ? "Welcome back" : "Create your account"}</h1>
           <p className="authSubtext">
-            {mode === "login" ? "Sign in to continue your chats." : "Save your chats and continue from anywhere."}
+            {mode === "login"
+              ? "Sign in to continue your chats."
+              : "Save your chats and continue from anywhere."}
           </p>
         </div>
 
@@ -107,12 +116,20 @@ function AuthPage({ onAuthSuccess }) {
           {error && <p className="authError">{error}</p>}
 
           <button className="authButton" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Please wait..." : mode === "login" ? "Sign in" : "Create account"}
+            {isSubmitting
+              ? "Please wait..."
+              : mode === "login"
+              ? "Sign in"
+              : "Create account"}
           </button>
         </form>
 
         <div className="authSwitch">
-          <span>{mode === "login" ? "New here?" : "Already have an account?"}</span>
+          <span>
+            {mode === "login"
+              ? "New here?"
+              : "Already have an account?"}
+          </span>
           <button
             type="button"
             className="authSwitchButton"

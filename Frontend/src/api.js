@@ -1,39 +1,54 @@
-const trimTrailingSlash = (value = "") => value.replace(/\/+$/, "");
+const IS_PROD = false;
 
-const resolveApiBase = () => {
-  const configuredBase = trimTrailingSlash(import.meta.env.VITE_API_BASE_URL || "");
+const server = IS_PROD
+  ? "https://deep-gpt.onrender.com"
+  : "http://localhost:8080";
 
-  if (configuredBase) {
-    return configuredBase;
+// ✅ API helper (centralized fetch)
+export const apiFetch = async (endpoint, options = {}) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${server}${endpoint}`, {
+      method: options.method || "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...(options.headers || {}),
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "API Error");
+    }
+
+    return data;
+  } catch (err) {
+    // Only log non-401 errors
+    if (!err.message.includes("required")) {
+      console.error("API ERROR:", err.message);
+    }
+    throw err;
   }
-
-  if (typeof window === "undefined") {
-    return "http://localhost:8080/api";
-  }
-
-  const { hostname, origin } = window.location;
-  const isLocalHost =
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "[::1]";
-
-  return isLocalHost ? "http://localhost:8080/api" : `${origin}/api`;
 };
 
-export const API_BASE = resolveApiBase();
-
-export const apiFetch = (path, options = {}) => {
-  const { headers = {}, ...restOptions } = options;
-
-  return fetch(`${API_BASE}${path}`, {
-    credentials: "include",
-    headers,
-    ...restOptions,
-  }).catch((error) => {
-    throw new Error(
-      error?.message === "Failed to fetch"
-        ? "Unable to reach the API. Check VITE_API_BASE_URL on the frontend and FRONTEND_URL on the backend."
-        : error?.message || "Request failed",
-    );
-  });
+// ✅ Save token (login)
+export const persistSessionToken = (token) => {
+  localStorage.setItem("token", token);
 };
+
+// ✅ Remove token (logout)
+export const clearSessionToken = () => {
+  localStorage.removeItem("token");
+};
+
+// ✅ Optional: get token (useful sometimes)
+export const getSessionToken = () => {
+  return localStorage.getItem("token");
+};
+
+// ✅ Default export (server URL if needed anywhere)
+export default server;
