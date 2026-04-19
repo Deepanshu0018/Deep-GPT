@@ -17,7 +17,16 @@ const allowedOrigins = [
     .filter(Boolean),
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-].map((origin) => origin.replace(/\/+$/, ""));
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+  // Allow any .onrender.com frontend domain
+  /.+\.onrender\.com$/,
+].map((origin) => {
+  if (typeof origin === "string") {
+    return origin.replace(/\/+$/, "");
+  }
+  return origin;
+});
 
 // ✅ Middleware
 app.use(express.json());
@@ -30,7 +39,16 @@ app.use(
 
       const normalizedOrigin = origin.replace(/\/+$/, "");
 
-      if (allowedOrigins.includes(normalizedOrigin)) {
+      // Check string matches
+      const isAllowed = allowedOrigins.some((allowed) => {
+        if (typeof allowed === "string") {
+          return allowed === normalizedOrigin;
+        }
+        // Check regex matches
+        return allowed.test(normalizedOrigin);
+      });
+
+      if (isAllowed) {
         return callback(null, true);
       }
 
