@@ -21,11 +21,10 @@ const allowedOrigins = [
   "http://127.0.0.1:5174",
 ];
 
-// ✅ CORS (fixed + safer + debug-friendly)
+// ✅ CORS - Allow all origins with wildcard
 app.use(
   cors({
-    origin: true, // Allow all origins (temporary debug)
-    credentials: true,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
