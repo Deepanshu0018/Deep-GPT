@@ -24,26 +24,7 @@ const allowedOrigins = [
 // ✅ CORS (fixed + safer + debug-friendly)
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      const normalizedOrigin = origin.replace(/\/+$/, "");
-
-      // Check exact matches
-      const isExactMatch = allowedOrigins.some(
-        (allowed) => allowed === normalizedOrigin,
-      );
-
-      // Check regex: allow any .onrender.com domain
-      const isRenderMatch = /.+\.onrender\.com$/.test(normalizedOrigin);
-
-      if (isExactMatch || isRenderMatch) {
-        return callback(null, true);
-      }
-
-      console.error("❌ CORS blocked:", origin);
-      return callback(new Error(`Origin ${origin} not allowed`));
-    },
+    origin: true, // Allow all origins (temporary debug)
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -52,6 +33,14 @@ app.use(
 
 // ✅ Middleware
 app.use(express.json());
+
+// ✅ Debug middleware - log all requests
+app.use((req, res, next) => {
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.path} - Origin: ${req.get("origin")}`,
+  );
+  next();
+});
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
