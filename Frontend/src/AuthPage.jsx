@@ -63,6 +63,17 @@ function AuthPage({ onAuthSuccess }) {
     setIsSubmitting(false);
   };
 
+  // ✅ Guest mode - bypass authentication
+  const handleGuestLogin = () => {
+    const guestUser = {
+      id: "guest",
+      name: "Guest User",
+      email: "guest@deepgpt.local",
+      role: "guest",
+    };
+    onAuthSuccess(guestUser);
+  };
+
   return (
     <div className="authShell">
       <div className="authPanel">
@@ -84,7 +95,6 @@ function AuthPage({ onAuthSuccess }) {
                 type="text"
                 value={formData.name}
                 onChange={updateField("name")}
-                placeholder="Deepanshu Gupta"
                 required
               />
             </label>
@@ -96,7 +106,6 @@ function AuthPage({ onAuthSuccess }) {
               type={mode === "login" ? "text" : "email"}
               value={formData.email}
               onChange={updateField("email")}
-              placeholder={mode === "login" ? "Deepanshu" : "you@example.com"}
               required
             />
           </label>
@@ -107,7 +116,6 @@ function AuthPage({ onAuthSuccess }) {
               type="password"
               value={formData.password}
               onChange={updateField("password")}
-              placeholder="At least 6 characters"
               minLength={6}
               required
             />
@@ -139,6 +147,20 @@ function AuthPage({ onAuthSuccess }) {
             }}
           >
             {mode === "login" ? "Create account" : "Sign in"}
+          </button>
+        </div>
+
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+          <p style={{ fontSize: "14px", color: "#999", marginBottom: "10px" }}>
+            or continue as
+          </p>
+          <button
+            type="button"
+            className="authButton"
+            onClick={handleGuestLogin}
+            style={{ backgroundColor: "#666" }}
+          >
+            Guest User
           </button>
         </div>
       </div>
